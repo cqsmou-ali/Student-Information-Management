@@ -6,11 +6,12 @@
   <div class="page-actions">
     <a class="btn btn-light btn-sm" href="{{ route('staff.students.edit', $student) }}">Edit profile</a>
     <a class="btn btn-sm" href="{{ route('staff.students.enrollment.edit', $student) }}">Edit enrollment</a>
+    <a class="btn btn-light btn-sm" href="{{ route('staff.students.print', $student) }}">Information sheet</a>
   </div>
 </div>
-@if (session('temp_password'))
+@if ($temporaryPassword)
   <div class="alert alert-warning" role="alert">
-    Give this temporary password to the student: <code class="temp">{{ session('temp_password') }}</code><br>
+    Give this temporary password to the student: <code class="temp">{{ $temporaryPassword }}</code><br>
     Username: <strong>{{ $student->student_number }}</strong>. It is shown only once, and the student must change it at first login.
   </div>
 @endif

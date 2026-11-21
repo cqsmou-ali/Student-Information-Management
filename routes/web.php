@@ -25,7 +25,9 @@ Route::middleware(['auth', 'account.active', 'password.changed'])->group(functio
         Route::resource('students', StudentController::class)->except('destroy');
         Route::get('students/{student}/enrollment', [StudentController::class, 'editEnrollment'])->name('students.enrollment.edit');
         Route::put('students/{student}/enrollment', [StudentController::class, 'updateEnrollment'])->name('students.enrollment.update');
+        Route::get('students/{student}/print', [ReportController::class, 'studentSheet'])->name('students.print');
         Route::get('reports', [ReportController::class, 'index'])->name('reports');
+        Route::get('reports/summary', [ReportController::class, 'summary'])->name('reports.summary');
         Route::get('academics', [AcademicController::class, 'index'])->name('academics');
     });
 

@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $guarded = ['id'];
+    /**
+     * Only these columns can be mass-assigned. user_id (account link) and is_deleted (soft delete)
+     * are deliberately left out, so a request can never set them, even via $request->all().
+     */
+    protected $fillable = [
+        'student_number', 'first_name', 'middle_name', 'last_name', 'birthdate', 'sex',
+        'email', 'contact_number', 'address', 'emergency_contact',
+        'course_id', 'year_level_id', 'section_id', 'enrollment_status', 'date_enrolled',
+    ];
 
     public const STATUSES = ['Enrolled', 'Not Enrolled', 'Graduated', 'Dropped', 'LOA'];
 
@@ -45,6 +53,12 @@ class Student extends Model
         return $query;
     }
 
+    /** Version stamp the edit forms carry, to detect that someone else saved in the meantime (see PreventsStaleEdits). */
+    public function editVersion(): string
+    {
+        return (string) $this->updated_at?->format('Y-m-d H:i:s');
+    }
+
     public function fullName(): string
     {
         return trim($this->last_name . ', ' . $this->first_name . ' ' . $this->middle_name);
@@ -60,4 +74,7 @@ class Student extends Model
     public function yearLevel() { return $this->belongsTo(YearLevel::class); }
     public function section()   { return $this->belongsTo(Section::class); }
     public function grades()    { return $this->hasMany(Grade::class); }
+
+    /** Audit trail: every logged action on this student (registered, viewed, updated, ...). */
+    public function activityLogs() { return $this->morphMany(ActivityLog::class, 'subject'); }
 }

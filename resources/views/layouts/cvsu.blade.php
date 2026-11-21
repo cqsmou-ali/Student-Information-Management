@@ -20,7 +20,7 @@
       @if (auth()->user()->role === 'staff')
         <li><a href="{{ route('staff.students.index') }}" class="{{ request()->routeIs('staff.students.index', 'staff.students.show', 'staff.students.edit', 'staff.students.enrollment.*') ? 'active' : '' }}">@include('partials.icon', ['name' => 'users'])Students</a></li>
         <li><a href="{{ route('staff.students.create') }}" class="{{ request()->routeIs('staff.students.create') ? 'active' : '' }}">@include('partials.icon', ['name' => 'plus'])Register student</a></li>
-        <li><a href="{{ route('staff.reports') }}" class="{{ request()->routeIs('staff.reports') ? 'active' : '' }}">@include('partials.icon', ['name' => 'file'])Reports</a></li>
+        <li><a href="{{ route('staff.reports') }}" class="{{ request()->routeIs('staff.reports', 'staff.reports.*', 'staff.students.print') ? 'active' : '' }}">@include('partials.icon', ['name' => 'file'])Reports</a></li>
         <li><a href="{{ route('staff.academics') }}" class="{{ request()->routeIs('staff.academics') ? 'active' : '' }}">@include('partials.icon', ['name' => 'book'])Courses &amp; sections</a></li>
       @endif
       <li><a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">@include('partials.icon', ['name' => 'user'])My profile</a></li>

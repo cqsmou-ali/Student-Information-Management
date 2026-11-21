@@ -4,6 +4,7 @@
 <div class="page-head">
   <h1>Student list report</h1>
   <div class="page-actions">
+    <a class="btn btn-light btn-sm" href="{{ route('staff.reports.summary') }}">Summary by section</a>
     <a class="btn btn-light btn-sm" href="{{ route('staff.students.export', $filters) }}">Download CSV</a>
     <button type="button" class="btn btn-sm" data-print>Print</button>
   </div>

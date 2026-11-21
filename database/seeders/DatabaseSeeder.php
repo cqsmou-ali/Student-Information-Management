@@ -44,8 +44,15 @@ class DatabaseSeeder extends Seeder
 
         // Admin and staff
         User::create(['username' => 'admin', 'email' => 'admin@cvsu.edu.ph', 'password_hash' => 'Admin@12345', 'role' => 'admin']);
-        foreach (['registrar1', 'registrar2'] as $name) {
-            User::create(['username' => $name, 'email' => "$name@cvsu.edu.ph", 'password_hash' => 'Staff@12345', 'role' => 'staff']);
+        $registrars = [
+            'registrar1' => ['Rosa M. Villanueva', 'Registrar Staff'],
+            'registrar2' => ['Carlo D. Mendoza', 'Records Assistant'],
+        ];
+        foreach ($registrars as $name => [$fullName, $position]) {
+            User::create([
+                'username' => $name, 'email' => "$name@cvsu.edu.ph", 'password_hash' => 'Staff@12345', 'role' => 'staff',
+                'full_name' => $fullName, 'position' => $position, 'office' => 'CEIT Office of the College Registrar',
+            ]);
         }
 
         // Students: username = student number, temporary password, must change it at first login
@@ -63,8 +70,8 @@ class DatabaseSeeder extends Seeder
                 'username' => $no, 'email' => $email, 'password_hash' => 'Student@12345',
                 'role' => 'student', 'must_change_password' => true,
             ]);
-            $made[$i] = Student::create([
-                'user_id' => $user->id, 'student_number' => $no, 'first_name' => $first, 'middle_name' => $mid,
+            $made[$i] = $user->student()->create([
+                'student_number' => $no, 'first_name' => $first, 'middle_name' => $mid,
                 'last_name' => $last, 'birthdate' => $bday, 'sex' => $sex, 'email' => $email,
                 'contact_number' => '0917123450' . ($i + 1), 'address' => $addr,
                 'emergency_contact' => 'Guardian of ' . $first . ' - 0918123450' . ($i + 1),

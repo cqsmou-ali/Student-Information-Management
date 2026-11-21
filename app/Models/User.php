@@ -9,7 +9,7 @@ class User extends Authenticatable
 {
     use Notifiable; // needed to send the password reset email
 
-    protected $fillable = ['username', 'email', 'password_hash', 'role', 'is_active', 'must_change_password'];
+    protected $fillable = ['username', 'email', 'password_hash', 'role', 'is_active', 'must_change_password', 'full_name', 'position', 'office'];
 
     protected $hidden = ['password_hash', 'remember_token'];
 

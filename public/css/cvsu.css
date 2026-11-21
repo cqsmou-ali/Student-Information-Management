@@ -166,3 +166,19 @@ code.temp { font-size: 1.25rem; font-weight: 700; letter-spacing: .05em; backgro
   table.data { font-size: .8rem; }
   table.data th { background: #eee; color: #000; }
 }
+
+/* ---- Registrar reports: information sheet and summary ---- */
+.sheet h3 { margin-top: 1.5rem; }
+.sheet-head { text-align: center; line-height: 1.4; padding-bottom: 1rem; border-bottom: 2px solid var(--green); }
+.sheet-head small, .sheet-head span { display: block; color: var(--muted); }
+.sheet-head strong { display: block; color: var(--green); }
+.sheet-head h2 { font-family: var(--serif); margin: .75rem 0 0; font-size: 1.4rem; letter-spacing: .04em; text-transform: uppercase; }
+.sheet-foot { margin-top: 2.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 1.5rem; }
+.signature { text-align: center; min-width: 240px; }
+.sig-line { display: block; border-bottom: 1px solid #000; height: 2.5rem; margin-bottom: .35rem; }
+table.data tr.subtotal td { font-weight: 600; background: #f6f8f6; }
+@media print {
+  .sheet { max-width: none; }
+  .sheet-foot .muted { font-size: .75rem; }
+  .card { break-inside: avoid; }
+}

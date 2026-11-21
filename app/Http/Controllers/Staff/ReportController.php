@@ -10,6 +10,7 @@ use App\Models\Student;
 use App\Models\YearLevel;
 use App\Support\Csv;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -52,6 +53,49 @@ class ReportController extends Controller
             }
             fclose($out);
         }, 'student-list-' . now()->format('Ymd-His') . '.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /** Printable information sheet for one student: personal and enrollment details (no grades: out of scope). */
+    public function studentSheet(Request $request, Student $student): View
+    {
+        $student->load(['course', 'yearLevel', 'section']);
+        ActivityLog::record('report_generated', 'Student information sheet of ' . $student->student_number, subject: $student);
+
+        return view('staff.reports.student', ['student' => $student, 'preparedBy' => $request->user()]);
+    }
+
+    /** Head count by course, then year level, then section (optionally for one enrollment status). */
+    public function summary(Request $request): View
+    {
+        $status = $request->validate(['status' => ['nullable', Rule::in(Student::STATUSES)]])['status'] ?? null;
+
+        $counts = Student::visible()->when($status, fn ($q) => $q->where('enrollment_status', $status))
+            ->selectRaw('course_id, year_level_id, section_id, count(*) as total')
+            ->groupBy('course_id', 'year_level_id', 'section_id')->get();
+        $years = YearLevel::orderBy('id')->get();
+        $sections = Section::orderBy('section_name')->get();
+
+        $report = Course::orderBy('course_code')->get()->map(function ($course) use ($counts, $years, $sections) {
+            $inCourse = $counts->where('course_id', $course->id);
+
+            $rows = $years->map(function ($year) use ($course, $inCourse, $sections) {
+                $inYear = $inCourse->where('year_level_id', $year->id);
+                $list = $sections->where('course_id', $course->id)->where('year_level_id', $year->id)
+                    ->map(fn ($s) => ['name' => $s->section_name, 'total' => (int) $inYear->where('section_id', $s->id)->sum('total')])->values();
+
+                return ['name' => $year->name, 'sections' => $list, 'unassigned' => (int) $inYear->whereNull('section_id')->sum('total'), 'total' => (int) $inYear->sum('total')];
+            })->filter(fn ($r) => $r['total'] > 0 || $r['sections']->isNotEmpty())->values();
+
+            return ['code' => $course->course_code, 'name' => $course->course_name, 'total' => (int) $inCourse->sum('total'), 'years' => $rows];
+        });
+
+        $grandTotal = (int) $counts->sum('total');
+        ActivityLog::record('report_generated', 'Summary by course, year level and section (' . $grandTotal . ' students' . ($status ? ', ' . $status : '') . ')');
+
+        return view('staff.reports.summary', [
+            'report' => $report, 'grandTotal' => $grandTotal, 'status' => $status,
+            'statuses' => Student::STATUSES,
+        ]);
     }
 
     private function query(Request $request)

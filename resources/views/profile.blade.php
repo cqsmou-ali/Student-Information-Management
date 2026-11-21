@@ -12,6 +12,17 @@
   </dl>
   <p><a href="{{ route('password.change') }}">Change password</a></p>
 </div>
+@if ($user->role === 'staff')
+<div class="card wide">
+  <h3>Staff details</h3>
+  <dl class="details">
+    <div><dt>Full name</dt><dd>{{ $user->full_name ?: 'Not set' }}</dd></div>
+    <div><dt>Position</dt><dd>{{ $user->position ?: 'Not set' }}</dd></div>
+    <div><dt>Office</dt><dd>{{ $user->office ?: 'Not set' }}</dd></div>
+  </dl>
+  <p class="muted">These details are kept by the administrator. Ask the admin to correct them.</p>
+</div>
+@endif
 @if ($student)
 <div class="card wide">
   <h3>Student record</h3>
