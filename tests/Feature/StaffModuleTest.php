@@ -37,6 +37,12 @@ class StaffModuleTest extends TestCase
         ], $over);
     }
 
+    /** A second staff account for tests that need one (only one registrar is seeded). No profile details. */
+    private function extraStaff(): User
+    {
+        return User::create(['username' => 'registrar-test', 'email' => 'registrar-test@cvsu.edu.ph', 'password_hash' => 'Staff@12345', 'role' => 'staff', 'is_active' => true]);
+    }
+
     /** The hidden field an edit form carries: the record's version when the form was opened. */
     private function version(Student $student): array
     {
@@ -109,9 +115,8 @@ class StaffModuleTest extends TestCase
             ->assertSee('CEIT Office of the College Registrar');
 
         // A staff account without details yet still renders.
-        $blank = User::where('username', 'registrar2')->first();
-        $blank->forceFill(['full_name' => null, 'position' => null, 'office' => null])->save();
-        $this->actingAs($blank)->get('/profile')->assertOk()->assertSee('Not set');
+        $blank = $this->extraStaff();
+        $this->actingAs($blank)->get('/profile')->assertOk()->assertSee('Staff details')->assertSee('Not set');
     }
 
     public function test_staff_details_card_is_for_staff_only(): void

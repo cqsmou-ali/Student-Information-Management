@@ -49,7 +49,8 @@ class PasswordResetTest extends TestCase
     public function test_deactivated_account_gets_no_link(): void
     {
         Notification::fake();
-        $user = User::where('username', 'registrar2')->first();
+        // A second staff account, created here because only one registrar is seeded.
+        $user = User::create(['username' => 'staff-inactive', 'email' => 'staff-inactive@cvsu.edu.ph', 'password_hash' => 'Staff@12345', 'role' => 'staff']);
         $user->forceFill(['is_active' => false])->save();
 
         $this->post('/forgot-password', ['email' => $user->email])->assertSessionHas('status');

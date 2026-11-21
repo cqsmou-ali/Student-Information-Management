@@ -60,9 +60,10 @@ it (`subject_type` / `subject_id`), so `$student->activityLogs` lists everything
 The log is **append-only** in the application: `ActivityLog` refuses updates and deletes. The Registrar
 cannot view the log (R13); only the Admin should.
 
-## 5. Two registrars editing the same student
+## 5. Two edits of the same student at once
 
-Each edit form remembers the version of the record when it was opened. If someone else saved the
+This covers two browser tabs or devices of the same registrar, or two staff accounts if more are added
+later. Each edit form remembers the version of the record when it was opened. If someone else saved the
 record in the meantime, the save is refused with a warning and nothing is changed. The typed edits stay
 in the form; the registrar can reload to see the latest version, or save again to replace the other
 change on purpose. (Limitation: two saves within the same second are not detected.)

@@ -44,16 +44,11 @@ class DatabaseSeeder extends Seeder
 
         // Admin and staff
         User::create(['username' => 'admin', 'email' => 'admin@cvsu.edu.ph', 'password_hash' => 'Admin@12345', 'role' => 'admin']);
-        $registrars = [
-            'registrar1' => ['Rosa M. Villanueva', 'Registrar Staff'],
-            'registrar2' => ['Carlo D. Mendoza', 'Records Assistant'],
-        ];
-        foreach ($registrars as $name => [$fullName, $position]) {
-            User::create([
-                'username' => $name, 'email' => "$name@cvsu.edu.ph", 'password_hash' => 'Staff@12345', 'role' => 'staff',
-                'full_name' => $fullName, 'position' => $position, 'office' => 'CEIT Office of the College Registrar',
-            ]);
-        }
+        // One Registrar account.
+        User::create([
+            'username' => 'registrar1', 'email' => 'registrar1@cvsu.edu.ph', 'password_hash' => 'Staff@12345', 'role' => 'staff',
+            'full_name' => 'Rosa M. Villanueva', 'position' => 'Registrar Staff', 'office' => 'CEIT Office of the College Registrar',
+        ]);
 
         // Students: username = student number, temporary password, must change it at first login
         $students = [
